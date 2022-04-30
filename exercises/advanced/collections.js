@@ -15,12 +15,29 @@ var promiseConstructor = require('../bare_minimum/promiseConstructor');
 
 var combineFirstLineOfManyFiles = function(filePaths, writePath) {
   // TODO
-  return Promise.all(filePaths.map(filePath => {
-    return promiseConstructor.pluckFirstLineFromFileAsync(filePath)
-      .then ((firstLine) => fsPromisify.writeFileAsync(writePath, firstLine + '\n', 'utf8'));
+  var promises = filePaths.map(filePath => promiseConstructor.pluckFirstLineFromFileAsync(filePath).
+    then (firstLine => fsPromisify.writeFileAsync(writePath, firstLine + '\n', 'utf8')
 
-  })).then ((data) => console.log('success!'))
-    .catch(err => console.log(err));
+
+    ));
+
+  return Promise.all(promises).then(text => console.log(`${text}`))
+    .catch (err => console.log('err'));
+
+
+
+
+
+
+
+
+  /************************************/
+  // return Promise.all(filePaths.map(filePath => {
+  //   return promiseConstructor.pluckFirstLineFromFileAsync(filePath)
+  //     .then ((firstLine) => fsPromisify.writeFileAsync(writePath, firstLine + '\n', 'utf8'));
+
+  // })).then ((data) => console.log('success!'))
+  //   .catch(err => console.log(err));
 
 
 };
