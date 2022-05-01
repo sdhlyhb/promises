@@ -10,19 +10,18 @@
 var fs = require('fs');
 const Promise = require('bluebird');
 const fsPromisify = Promise.promisifyAll(fs);
-var promisification = require('../bare_minimum/promisification');
+var fsPromises = require('fs').promises;
 var promiseConstructor = require('../bare_minimum/promiseConstructor');
 
 var combineFirstLineOfManyFiles = function(filePaths, writePath) {
   // TODO
-  var promises = filePaths.map(filePath => promiseConstructor.pluckFirstLineFromFileAsync(filePath).
-    then (firstLine => fsPromisify.writeFileAsync(writePath, firstLine + '\n', 'utf8')
+  var promises = filePaths.map(filePath => promiseConstructor.pluckFirstLineFromFileAsync(filePath)
 
+  );
 
-    ));
-
-  return Promise.all(promises).then(text => console.log(`${text}`))
-    .catch (err => console.log('err'));
+  return Promise.all(promises)
+    .then(text => fsPromises.writeFile(writePath, text.join('\n')))
+    .catch (err => console.log('err writing'));
 
 
 
